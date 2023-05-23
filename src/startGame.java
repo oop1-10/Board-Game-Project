@@ -2,11 +2,10 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+
 public class startGame implements ActionListener {
     JFrame frame = new JFrame("Board Game!");
     JButton myButton = new JButton("Start Board Game!");
-
-
 
     startGame() {
 

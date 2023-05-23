@@ -1,22 +1,59 @@
 import javax.swing.*;
-import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 
 public class indicatePlayers implements ActionListener {
-    public Font defaultFont = new Font(null, Font.PLAIN, 12);
+
     JFrame frame = new JFrame("Player Indication");
-    String[] playerNumbers = {"2", "3", "4"};
+    Font defaultFont = new Font(null, Font.PLAIN, 12);
+    Integer[] playerNumbers = {2, 3, 4};
+    String[] visiblePlayerNames = new String[4];
+    public static int playerNum = 4;
+    JButton button = new JButton("Confirm");
+    JButton confirm = new JButton("Confirm");
+    JComboBox<Integer> playerAmount = new JComboBox<>(playerNumbers);
+    JTextArea[] playerNames = new JTextArea[getPlayerNum()];
+    JTextArea[] names = new JTextArea[getPlayerNum()];
+    JTextArea text = new JTextArea();
 
     indicatePlayers() {
-        JComboBox<String> playerAmount = new JComboBox<>(playerNumbers);
+        for (int i = 0; i < playerNames.length; i++) {
+            playerNames[i] = new JTextArea();
+            names[i] = new JTextArea();
+        }
+
+        int x = 10, y = 10;
+        for (int i = 0; i < names.length; i++) {
+            names[i].setBounds(x, y + i * 40,50,30);
+            names[i].setText("Name: ");
+            names[i].setLayout(null);
+            names[i].setEditable(false);
+            names[i].setFont(defaultFont);
+            names[i].setVisible(false);
+
+            playerNames[i].setBounds(x + 60, y + i * 40, 100, 30);
+            playerNames[i].setVisible(false);
+            frame.add(playerNames[i]);
+            frame.add(names[i]);
+        }
+
+        confirm.setBounds(100, 200, 100, 40);
+        confirm.setFocusable(false);
+        confirm.addActionListener(this);
+        confirm.setVisible(false);
+
+        frame.add(confirm);
+
         playerAmount.getSelectedIndex();
-        playerAmount.addActionListener(this);
         playerAmount.setBounds(100,50,90,20);
 
-        JTextArea text = new JTextArea();
+        button.setFocusable(false);
+        button.setBounds(100, 160, 100, 40);
+        button.addActionListener(this);
+        button.setLayout(null);
+
         text.setText("Players: ");
         text.setLayout(null);
         text.setBounds(40,50,50,30);
@@ -24,21 +61,40 @@ public class indicatePlayers implements ActionListener {
         text.setEditable(false);
 
         frame.add(text);
-        frame.add(playerAmount);
+        frame.getContentPane().add(playerAmount);
+        frame.add(button);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(250,250);
+        frame.setSize(400,300);
         frame.setLayout(null);
         frame.setVisible(true);
     }
 
-public int playerAmount;
+
     @Override
     public void actionPerformed(ActionEvent e) {
-        JComboBox x = (JComboBox)e.getSource();
-        String playerNum = (String) x.getSelectedItem();
-        assert playerNum != null;
-        playerAmount = Integer.parseInt(playerNum);
-        frame.dispose();
-        MainUI openUI = new MainUI();
+
+        if (e.getSource()==button) {
+            playerNum = (int) playerAmount.getSelectedItem();
+            for (int i = 0; i < getPlayerNum(); i++) {
+                playerNames[i].setVisible(true);
+                names[i].setVisible(true);
+                button.setVisible(false);
+                confirm.setVisible(true);
+                playerAmount.setVisible(false);
+                text.setVisible(false);
+            }
+        }
+
+        if (e.getSource()==confirm) {
+            for (int i = 0; i < getPlayerNum(); i++) {
+                visiblePlayerNames[i] = playerNames[i].getText();
+                frame.dispose();
+                MainUI openFinally = new MainUI();
+            }
+        }
+    }
+
+    public static int getPlayerNum (){
+        return playerNum;
     }
 }

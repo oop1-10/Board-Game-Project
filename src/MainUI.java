@@ -13,17 +13,17 @@ public class MainUI {
         for (int i = 0; i < squares.length; i++) {
             squares[i] = new JTextArea(Integer.toString(i));
             if (i < 8) {
-                squares[i].setBounds(x, y, 30, 30);
-                x += 40;
+                squares[i].setBounds(x, y, 40, 40);
+                x += 50;
             } else if (i < 12) {
-                squares[i].setBounds(x, y, 30, 30);
-                y += 40;
+                squares[i].setBounds(x, y, 40, 40);
+                y += 50;
             } else if (i < 20) {
-                squares[i].setBounds(x, y, 30, 30);
-                x -= 40;
+                squares[i].setBounds(x, y, 40, 40);
+                x -= 50;
             } else {
-                squares[i].setBounds(x, y, 30, 30);
-                y -= 40;
+                squares[i].setBounds(x, y, 40, 40);
+                y -= 50;
             }
             squares[i].setFont(defaultFont);
             squares[i].setEditable(false);
@@ -35,5 +35,10 @@ public class MainUI {
         frame.setSize(800,600);
         frame.setLayout(null);
         frame.setVisible(true);
+    }
+
+
+    public static String[][][] playerInfo (int playerAmount, String name, int position) {
+        
     }
 }
