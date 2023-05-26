@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Random;
 
 
 public class indicatePlayers implements ActionListener {
@@ -9,8 +10,9 @@ public class indicatePlayers implements ActionListener {
     JFrame frame = new JFrame("Player Indication");
     Font defaultFont = new Font(null, Font.PLAIN, 12);
     Integer[] playerNumbers = {2, 3, 4};
-    String[] visiblePlayerNames = new String[4];
+    public static String[] visiblePlayerNames = new String[4];
     public static int playerNum = 4;
+    public static String[][] playerInfo = new String[playerNum][4];
     JButton button = new JButton("Confirm");
     JButton confirm = new JButton("Confirm");
     JComboBox<Integer> playerAmount = new JComboBox<>(playerNumbers);
@@ -72,7 +74,6 @@ public class indicatePlayers implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-
         if (e.getSource()==button) {
             playerNum = (int) playerAmount.getSelectedItem();
             for (int i = 0; i < getPlayerNum(); i++) {
@@ -89,6 +90,7 @@ public class indicatePlayers implements ActionListener {
             for (int i = 0; i < getPlayerNum(); i++) {
                 visiblePlayerNames[i] = playerNames[i].getText();
                 frame.dispose();
+                playerInfo = rollingAndPoints.playerInfoInitializer(playerNum, visiblePlayerNames);
                 MainUI openFinally = new MainUI();
             }
         }
@@ -97,4 +99,6 @@ public class indicatePlayers implements ActionListener {
     public static int getPlayerNum (){
         return playerNum;
     }
+
+
 }
