@@ -1,5 +1,3 @@
-import java.util.Arrays;
-
 public class rollingAndPoints {
 
     public static String[][] playerInfoInitializer (int playerTotal, String[] name) {
@@ -20,6 +18,4 @@ public class rollingAndPoints {
 
         return output;
     }
-
-
 }

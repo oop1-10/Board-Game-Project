@@ -2,9 +2,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
 import java.util.Random;
 
 public class MainUI implements ActionListener {
+    public static int currentPlayer = 1;
+
     static Font defaultFont = new Font(null, Font.PLAIN, 12);
     static JFrame frame = new JFrame();
     public static JTextArea[] squares = new JTextArea[24];
@@ -50,24 +53,44 @@ public class MainUI implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        int currentPlayer = 1;
+
         if (e.getSource()==roll) {
-            updateBoard(currentPlayer, indicatePlayers.playerInfo);
-            currentPlayer++;
+            indicatePlayers.playerInfo = updateBoard(currentPlayer, indicatePlayers.playerInfo);
+            if (currentPlayer < indicatePlayers.getPlayerNum()) {
+                currentPlayer++;
+            } else {
+                currentPlayer = 1;
+            }
         }
     }
 
     public static String[][] updateBoard (int currentPlayer,String[][] input) {
         Random rn = new Random();
+        // removing old player position display
+        squares[Integer.parseInt(input[currentPlayer-1][2])].setText(input[currentPlayer-1][2]);
+        // getting new player position
+        input[currentPlayer-1][2] = Integer.toString(Integer.parseInt(input[currentPlayer-1][2]) + rn.nextInt(1, 6));
+        // if the player position reaches over 24, the game ends
+        if (Integer.parseInt(input[currentPlayer-1][2]) > 24) {
+            endGame();
+        } else {
+            // adding player number to new position
+            squares[Integer.parseInt(input[currentPlayer-1][2])].setText(squares[Integer.parseInt(input[currentPlayer-1][2])].getText() + ", " + currentPlayer);
 
-        int originalPos = Integer.parseInt(input[currentPlayer][2].substring(0,1));
+            if (Integer.parseInt(input[currentPlayer][2]) == 9 || Integer.parseInt(input[currentPlayer][2]) == 13 || Integer.parseInt(input[currentPlayer][2]) == 21) {
+                int currentPos = Integer.parseInt(input[currentPlayer][2]);
 
-        input[currentPlayer][2] = Integer.toString(Integer.parseInt(input[currentPlayer][2]) + rn.nextInt());
-
-        squares[Integer.parseInt(input[currentPlayer][2])].setText(squares[Integer.parseInt(input[currentPlayer][2])].getText() + ", " + input[currentPlayer][2]);
-
-        squares[originalPos].setText(Integer.toString(originalPos));
-
+                if (currentPos == 9) {
+                    
+                }
+            }
+        }
         return input;
     }
+
+    public static void endGame () {
+
+    }
+
+
 }

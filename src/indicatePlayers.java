@@ -99,6 +99,4 @@ public class indicatePlayers implements ActionListener {
     public static int getPlayerNum (){
         return playerNum;
     }
-
-
 }
