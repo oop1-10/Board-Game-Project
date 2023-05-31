@@ -2,11 +2,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Random;
 
 
 public class indicatePlayers implements ActionListener {
-
     JFrame frame = new JFrame("Player Indication");
     Font defaultFont = new Font(null, Font.PLAIN, 12);
     Integer[] playerNumbers = {2, 3, 4};
@@ -90,13 +88,33 @@ public class indicatePlayers implements ActionListener {
             for (int i = 0; i < getPlayerNum(); i++) {
                 visiblePlayerNames[i] = playerNames[i].getText();
                 frame.dispose();
-                playerInfo = rollingAndPoints.playerInfoInitializer(playerNum, visiblePlayerNames);
                 MainUI openFinally = new MainUI();
             }
+            playerInfo = playerInfoInitializer(playerNum, visiblePlayerNames);
         }
     }
 
     public static int getPlayerNum (){
         return playerNum;
     }
+
+    public static String[][] playerInfoInitializer (int playerTotal, String[] name) {
+        String[][] output = new String[playerTotal][4];
+
+        for (int i = 1; i < playerTotal + 1; i++) {
+            output[i-1][0] = Integer.toString(i);
+        }
+
+        for (int i = 0; i < playerTotal; i++) {
+            output[i][1] = name[i];
+        }
+
+        for (int i = 0; i < playerTotal; i++) {
+            output[i][2] = Integer.toString(0);
+            output[i][3] = Integer.toString(0);
+        }
+
+        return output;
+    }
+
 }
