@@ -5,5 +5,10 @@ public class mini13 {
 
     mini13() {
 
+
+        minigameWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        minigameWindow.setSize(300,300);
+        minigameWindow.setLayout(null);
+        minigameWindow.setVisible(true);
     }
 }

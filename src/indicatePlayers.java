@@ -6,7 +6,6 @@ import java.awt.event.ActionListener;
 
 public class indicatePlayers implements ActionListener {
     JFrame frame = new JFrame("Player Indication");
-    Font defaultFont = new Font(null, Font.PLAIN, 12);
     Integer[] playerNumbers = {2, 3, 4};
     public static String[] visiblePlayerNames = new String[4];
     public static int playerNum = 4;
@@ -15,13 +14,13 @@ public class indicatePlayers implements ActionListener {
     JButton confirm = new JButton("Confirm");
     JComboBox<Integer> playerAmount = new JComboBox<>(playerNumbers);
     JTextArea[] playerNames = new JTextArea[getPlayerNum()];
-    JTextArea[] names = new JTextArea[getPlayerNum()];
-    JTextArea text = new JTextArea();
+    JLabel[] names = new JLabel[getPlayerNum()];
+    JLabel text = new JLabel("Players: ");
 
     indicatePlayers() {
         for (int i = 0; i < playerNames.length; i++) {
             playerNames[i] = new JTextArea();
-            names[i] = new JTextArea();
+            names[i] = new JLabel();
         }
 
         int x = 10, y = 10;
@@ -29,8 +28,6 @@ public class indicatePlayers implements ActionListener {
             names[i].setBounds(x, y + i * 40,50,30);
             names[i].setText("Name: ");
             names[i].setLayout(null);
-            names[i].setEditable(false);
-            names[i].setFont(defaultFont);
             names[i].setVisible(false);
 
             playerNames[i].setBounds(x + 60, y + i * 40, 100, 30);
@@ -54,11 +51,9 @@ public class indicatePlayers implements ActionListener {
         button.addActionListener(this);
         button.setLayout(null);
 
-        text.setText("Players: ");
         text.setLayout(null);
+        text.setFocusable(false);
         text.setBounds(40,50,50,30);
-        text.setFont(defaultFont);
-        text.setEditable(false);
 
         frame.add(text);
         frame.getContentPane().add(playerAmount);
@@ -72,6 +67,7 @@ public class indicatePlayers implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        // when this button is pressed, it will save the amount of players and reveal the boxes for names
         if (e.getSource()==button) {
             playerNum = (int) playerAmount.getSelectedItem();
             for (int i = 0; i < getPlayerNum(); i++) {
@@ -83,7 +79,7 @@ public class indicatePlayers implements ActionListener {
                 text.setVisible(false);
             }
         }
-
+        // when this button is pressed, it will save all of the names entered and close the window, while also opening the MainUI window.  Lastly, it will call the player info initializer function
         if (e.getSource()==confirm) {
             for (int i = 0; i < getPlayerNum(); i++) {
                 visiblePlayerNames[i] = playerNames[i].getText();
@@ -94,21 +90,32 @@ public class indicatePlayers implements ActionListener {
         }
     }
 
+    /**
+     * This function returns the player num variable
+     * @return the amount of players currently playing the game
+     */
     public static int getPlayerNum (){
         return playerNum;
     }
 
+    /**
+     * This functions initialzes the 2D array that is being used to store the basic player information
+     * @param playerTotal - the total amount of players currently in the game
+     * @param name - an array of names entered that will loop into the 2D array above
+     * @return the now initialized player info array
+     */
     public static String[][] playerInfoInitializer (int playerTotal, String[] name) {
+        // making the output array for the information
         String[][] output = new String[playerTotal][4];
-
-        for (int i = 1; i < playerTotal + 1; i++) {
-            output[i-1][0] = Integer.toString(i);
+        // loop through the first row of the array and list the player numbers
+        for (int i = 0; i < playerTotal; i++) {
+            output[i][0] = Integer.toString(i+1);
         }
-
+        // loop through the second row and copy over the collected names
         for (int i = 0; i < playerTotal; i++) {
             output[i][1] = name[i];
         }
-
+        // loop through the last 2 rows with 0, 2 being position and 3 being points
         for (int i = 0; i < playerTotal; i++) {
             output[i][2] = Integer.toString(0);
             output[i][3] = Integer.toString(0);
