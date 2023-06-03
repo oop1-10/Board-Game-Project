@@ -1,7 +1,7 @@
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
 
 
 public class indicatePlayers implements ActionListener {
@@ -110,17 +110,12 @@ public class indicatePlayers implements ActionListener {
         // loop through the first row of the array and list the player numbers
         for (int i = 0; i < playerTotal; i++) {
             output[i][0] = Integer.toString(i+1);
-        }
-        // loop through the second row and copy over the collected names
-        for (int i = 0; i < playerTotal; i++) {
+            // loop through the second row and copy over the collected names
             output[i][1] = name[i];
-        }
-        // loop through the last 2 rows with 0, 2 being position and 3 being points
-        for (int i = 0; i < playerTotal; i++) {
+            // loop through the last 2 rows with 0, 2 being position and 3 being points
             output[i][2] = Integer.toString(0);
             output[i][3] = Integer.toString(0);
         }
-
         return output;
     }
 
