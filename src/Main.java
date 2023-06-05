@@ -7,7 +7,7 @@ public class Main {
         startGame game = new startGame();
         Random rn = new Random();
         for (int i = 0; i < pointsAmount.length; i++) {
-            pointsAmount[i] = rn.nextInt(-3, 3);
+            pointsAmount[i] = rn.nextInt(-1, 3);
         }
     }
 }

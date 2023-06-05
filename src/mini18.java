@@ -1,9 +1,10 @@
 import javax.swing.*;
 
-public class mini13 {
+public class mini18 {
+    public static int posChange;
     static JFrame minigameWindow = new JFrame();
-
-    mini13() {
+    // memory game
+    mini18() {
 
 
         minigameWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

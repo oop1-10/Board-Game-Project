@@ -1,7 +1,6 @@
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Arrays;
 
 
 public class indicatePlayers implements ActionListener {
@@ -83,10 +82,24 @@ public class indicatePlayers implements ActionListener {
         if (e.getSource()==confirm) {
             for (int i = 0; i < getPlayerNum(); i++) {
                 visiblePlayerNames[i] = playerNames[i].getText();
-                frame.dispose();
-                MainUI openFinally = new MainUI();
+
             }
-            playerInfo = playerInfoInitializer(playerNum, visiblePlayerNames);
+            // this is a loop to initialize the player info collected at the start of the game
+            // loop through the first row of the array and list the player numbers
+            for (int i = 0; i < playerNum; i++) {
+                playerInfo[i][0] = Integer.toString(i);
+                // loop through the second row and copy over the collected names
+                playerInfo[i][1] = visiblePlayerNames[i];
+                // loop through the last 2 rows with 0, 2 being position and 3 being points
+                playerInfo[i][2] = Integer.toString(0);
+                playerInfo[i][3] = Integer.toString(0);
+            }
+            // getting rid of the window and opening the main window, as well as attempting to display the players' positions on the zero square
+            frame.dispose();
+            MainUI openFinally = new MainUI();
+            for (int i = 0; i < getPlayerNum(); i++) {
+                MainUI.updateBoard(i, 0, indicatePlayers.playerInfo);
+            }
         }
     }
 
@@ -97,26 +110,4 @@ public class indicatePlayers implements ActionListener {
     public static int getPlayerNum (){
         return playerNum;
     }
-
-    /**
-     * This functions initialzes the 2D array that is being used to store the basic player information
-     * @param playerTotal - the total amount of players currently in the game
-     * @param name - an array of names entered that will loop into the 2D array above
-     * @return the now initialized player info array
-     */
-    public static String[][] playerInfoInitializer (int playerTotal, String[] name) {
-        // making the output array for the information
-        String[][] output = new String[playerTotal][4];
-        // loop through the first row of the array and list the player numbers
-        for (int i = 0; i < playerTotal; i++) {
-            output[i][0] = Integer.toString(i+1);
-            // loop through the second row and copy over the collected names
-            output[i][1] = name[i];
-            // loop through the last 2 rows with 0, 2 being position and 3 being points
-            output[i][2] = Integer.toString(0);
-            output[i][3] = Integer.toString(0);
-        }
-        return output;
-    }
-
 }

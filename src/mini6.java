@@ -3,7 +3,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Random;
 
-public class mini9 implements ActionListener {
+public class mini6 implements ActionListener {
     static Random rn = new Random();
     static JButton guess = new JButton("Guess!");
     static JTextArea guessNum = new JTextArea();
@@ -11,8 +11,9 @@ public class mini9 implements ActionListener {
     static JFrame minigameWindow = new JFrame();
     int randNum = rn.nextInt(1, 10);
     int attempts = 0;
+    public static int posChange;
 
-    mini9() {
+    mini6() {
         guess.setFocusable(false);
         guess.setBounds(100, 200, 100 ,40);
         guess.addActionListener(this);
@@ -39,17 +40,18 @@ public class mini9 implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource()==guess) {
-            int posChange;
             Random rn = new Random();
-            if (attempts < 3) {
+            if (attempts < 2) {
                 try {
                     if (Integer.parseInt(guessNum.getText()) == randNum && Integer.parseInt(guessNum.getText()) <= 10) {
                         posChange = rn.nextInt(1, 4);
-                        MainUI.updateBoard(MainUI.currentPlayer, posChange, indicatePlayers.playerInfo);
                         minigameWindow.dispose();
                         MainUI again = new MainUI();
+                        MainUI.updateBoard(MainUI.currentPlayer, posChange, indicatePlayers.playerInfo);
+                        MainUI.notification.setText(MainUI.oldNoti + " " + indicatePlayers.playerInfo[MainUI.currentPlayer][1] + " won the minigame. They moved " + posChange + " spaces.");
                     } else if (Integer.parseInt(guessNum.getText()) != randNum && Integer.parseInt(guessNum.getText()) <= 10) {
                         attempts++;
+                        guessText.setText("<html>Guess a number<br/>between 1-10.<br/>You have " + (3-attempts) + " attempts.</html>");
                     } else {
                         guess.setText("That is not valid!");
                     }
@@ -58,9 +60,10 @@ public class mini9 implements ActionListener {
                 }
             } else {
                 posChange = rn.nextInt(-3, -1);
-                MainUI.updateBoard(MainUI.currentPlayer, posChange, indicatePlayers.playerInfo);
                 minigameWindow.dispose();
                 MainUI again = new MainUI();
+                MainUI.updateBoard(MainUI.currentPlayer, posChange, indicatePlayers.playerInfo);
+                MainUI.notification.setText(MainUI.oldNoti + " " + indicatePlayers.playerInfo[MainUI.currentPlayer][1] + " lost the minigame. They moved " + posChange + " spaces.");
             }
         }
     }
