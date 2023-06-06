@@ -6,21 +6,17 @@ import java.util.Random;
 
 public class MainUI implements ActionListener {
     public static int currentPlayer = 0;
-    public static int totalPlayers = indicatePlayers.getPlayerNum();
     static Font largeFont = new Font(null, Font.PLAIN, 25);
-    static JFrame frame = new JFrame();
+    static JFrame frame = new JFrame("Board Game");
     public static JTextArea[] squares = new JTextArea[24];
     static JTextArea notification = new JTextArea();
     JButton roll = new JButton("Roll");
     public static int[] winners = new int[2];
     static JLabel[] names = new JLabel[indicatePlayers.playerNum];
     static JLabel[] points  = new JLabel[indicatePlayers.playerNum];
-    JLabel namesText = new JLabel("Names: ");
-    JLabel pointsText = new JLabel("Points: ");
-    public static String oldNoti;
-    public static boolean event = false;
-    public static boolean ladder = false;
-    public static boolean snake = false;
+    JLabel[] text = new JLabel[2];
+    // turn these boolean into array?
+    public static boolean[] events = new boolean[3];
     public static int rollMove;
 
     /**
@@ -29,6 +25,7 @@ public class MainUI implements ActionListener {
     MainUI() {
         // initializing the x and y positions so that they can be easily changed
         int x = 10, y = 10;
+
         for (int i = 0; i < squares.length; i++) {
             squares[i] = new JTextArea(Integer.toString(Main.pointsAmount[i]));
             // this will change the x and y values so that the boxes will be created in a rectangular shape
@@ -72,11 +69,13 @@ public class MainUI implements ActionListener {
             y += 40;
         }
         // creating text to clarify what is being shown
-        namesText.setBounds(400, 20,50,15);
-        namesText.setLayout(null);
-        // creating text to clarify what is being shown
-        pointsText.setBounds(500, 20,50,15);
-        pointsText.setLayout(null);
+        text[0] = new JLabel("Names: ");
+        text[0].setBounds(400, 20,50,15);
+        text[0].setLayout(null);
+        // creating text more text
+        text[1] = new JLabel("Points: ");
+        text[1].setBounds(500, 20,50,15);
+        text[1].setLayout(null);
         // configuring a roll button so that the player can roll the dice
         roll.setFocusable(false);
         roll.setBounds(650, 100, 100, 40);
@@ -90,9 +89,7 @@ public class MainUI implements ActionListener {
         // adding the now configured buttons and texts
         frame.add(roll);
         frame.add(notification);
-        frame.add(namesText);
-        frame.add(pointsText);
-
+        for (JLabel jLabel : text) {frame.add(jLabel);}
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(800,600);
         frame.setLayout(null);
@@ -112,7 +109,7 @@ public class MainUI implements ActionListener {
             events(currentPlayer, indicatePlayers.playerInfo);
 
             // when the player number becomes greater than the total amount, it resets it to zero
-            if (currentPlayer == totalPlayers-1) {
+            if (currentPlayer == indicatePlayers.getPlayerNum()-1) {
                 currentPlayer = 0;
             } else {
                 currentPlayer++;
@@ -142,19 +139,19 @@ public class MainUI implements ActionListener {
             frame.setVisible(false);
             mini18 thirdMinigame = new mini18();
         } else if (currentPos == Main.firstLadder) { // must change the way the notifications are set up, it will only save one of the notifications or use only one of the notifs
-            ladder = true;
+            events[1] = true;
             int posChange = rn.nextInt(1, 2);
             updateBoard(currentPlayer, posChange, indicatePlayers.playerInfo);
         } else if (currentPos == Main.secondLadder) {
-            ladder = true;
+            events[1] = true;
             int posChange = rn.nextInt(2, 3);
             updateBoard(currentPlayer, posChange, indicatePlayers.playerInfo);
         } else if (currentPos == Main.firstSnake) {
-            snake = true;
+            events[2] = true;
             int posChange = rn.nextInt(-3, -1);
             updateBoard(currentPlayer, posChange, indicatePlayers.playerInfo);
         } else if (currentPos == 22) {
-            snake = true;
+            events[2] = true;
             int posChange = rn.nextInt(-3, -2);
             updateBoard(currentPlayer, posChange, indicatePlayers.playerInfo);
         }
@@ -191,18 +188,18 @@ public class MainUI implements ActionListener {
 
             points[currentPlayer].setText(indicatePlayers.playerInfo[currentPlayer][3]);
             
-            if (event && newPos > 0) {
-                notification.setText(input[currentPlayer][1] + " moved " + rollMove + " spaces." + indicatePlayers.playerInfo[currentPlayer][1] + " won the minigame and went " + newPos + " spaces forward!");
-                event = false;
-            } else if (event && newPos < 0) {
-                notification.setText(input[currentPlayer][1] + " moved " + rollMove + " spaces." + indicatePlayers.playerInfo[currentPlayer][1] + " lost the minigame and went " + Math.abs(newPos) + " spaces backward!");
-                event = false;
-            } else if (ladder) {
-                notification.setText(input[currentPlayer][1] + " moved " + rollMove + " spaces." + indicatePlayers.playerInfo[currentPlayer][1] + " landed on a ladder and went " + newPos + " spaces forward!");
-                ladder = false;
-            } else if (snake) {
-                notification.setText(input[currentPlayer][1] + " moved " + rollMove + " spaces." + indicatePlayers.playerInfo[currentPlayer][1] + " landed on a snake and went " + Math.abs(newPos) + " spaces backward!");
-                snake = false;
+            if (events[0] && newPos > 0) {
+                notification.setText(input[currentPlayer][1] + " moved " + rollMove + " spaces. " + indicatePlayers.playerInfo[currentPlayer][1] + " won the minigame and went " + newPos + " spaces forward!");
+                events[0] = false;
+            } else if (events[0] && newPos < 0) {
+                notification.setText(input[currentPlayer][1] + " moved " + rollMove + " spaces. " + indicatePlayers.playerInfo[currentPlayer][1] + " lost the minigame and went " + Math.abs(newPos) + " spaces backward!");
+                events[0] = false;
+            } else if (events[1]) {
+                notification.setText(input[currentPlayer][1] + " moved " + rollMove + " spaces. " + indicatePlayers.playerInfo[currentPlayer][1] + " landed on a ladder and went " + newPos + " spaces forward!");
+                events[1] = false;
+            } else if (events[2]) {
+                notification.setText(input[currentPlayer][1] + " moved " + rollMove + " spaces. " + indicatePlayers.playerInfo[currentPlayer][1] + " landed on a snake and went " + Math.abs(newPos) + " spaces backward!");
+                events[2] = false;
             }
         } catch (ArrayIndexOutOfBoundsException e){
             frame.dispose();

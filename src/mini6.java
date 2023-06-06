@@ -45,7 +45,7 @@ public class mini6 implements ActionListener {
             if (attempts < 2) {
                 try {
                     if (Integer.parseInt(guessNum.getText()) == randNum && Integer.parseInt(guessNum.getText()) <= 10) {
-                        MainUI.event = true;
+                        MainUI.events[0] = true;
                         posChange = rn.nextInt(1, 4);
                         minigameWindow.dispose();
                         MainUI.frame.setVisible(true);
@@ -60,7 +60,7 @@ public class mini6 implements ActionListener {
                     guess.setText("That is not valid!");
                 }
             } else {
-                MainUI.event = true;
+                MainUI.events[0] = true;
                 posChange = rn.nextInt(-4, -1);
                 minigameWindow.dispose();
                 MainUI.frame.setVisible(true);

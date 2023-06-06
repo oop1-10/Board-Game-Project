@@ -52,7 +52,7 @@ public class mini12 implements ActionListener {
                 posChange = rn.nextInt(-4, -1);
             }
         }
-        MainUI.event = true;
+        MainUI.events[0] = true;
         MainUI.updateBoard(MainUI.pastPlayer, posChange, indicatePlayers.playerInfo);
         minigameWindow.dispose();
         MainUI.frame.setVisible(true);
