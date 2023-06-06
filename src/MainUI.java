@@ -12,13 +12,16 @@ public class MainUI implements ActionListener {
     public static JTextArea[] squares = new JTextArea[24];
     static JTextArea notification = new JTextArea();
     JButton roll = new JButton("Roll");
-    public static int squaresWinner = 0;
-    public static int pointsWinner = 0;
+    public static int[] winners = new int[2];
     static JLabel[] names = new JLabel[indicatePlayers.playerNum];
     static JLabel[] points  = new JLabel[indicatePlayers.playerNum];
     JLabel namesText = new JLabel("Names: ");
     JLabel pointsText = new JLabel("Points: ");
     public static String oldNoti;
+    public static boolean event = false;
+    public static boolean ladder = false;
+    public static boolean snake = false;
+    public static int rollMove;
 
     /**
      * This is a constructor used to build the window, every application I have made uses these to enable window creation.
@@ -95,15 +98,19 @@ public class MainUI implements ActionListener {
         frame.setLayout(null);
         frame.setVisible(true);
     }
-
+    public static int pastPlayer;
     @Override
     public void actionPerformed(ActionEvent e) {
         Random rn = new Random();
         // when roll button is clicked, run function
         if (e.getSource()==roll) {
-            int pastPlayer = currentPlayer;
+            pastPlayer = currentPlayer;
+            rollMove = rn.nextInt(1,6);
             // calling update board function
-            updateBoard(currentPlayer, rn.nextInt(1, 6), indicatePlayers.playerInfo);
+            updateBoard(currentPlayer, rollMove, indicatePlayers.playerInfo);
+            // running events function to see if the player landed on a special square
+            events(currentPlayer, indicatePlayers.playerInfo);
+
             // when the player number becomes greater than the total amount, it resets it to zero
             if (currentPlayer == totalPlayers-1) {
                 currentPlayer = 0;
@@ -122,30 +129,34 @@ public class MainUI implements ActionListener {
      */
     public static void events (int currentPlayer,String[][] input) {
         Random rn = new Random();
-        oldNoti = notification.getText();
         int currentPos = Integer.parseInt(input[currentPlayer][2]);
         // if the player lands on one of these squares, start a minigame or move forward
         if (currentPos == 6) {
-            frame.dispose();
+            mini6.attempts = 0;
+            frame.setVisible(false);
             mini6 firstMinigame = new mini6();
         } else if (currentPos == 12) {
-            frame.dispose();
+            frame.setVisible(false);
             mini12 secondMinigame = new mini12();
         } else if (currentPos == 18) {
-            frame.dispose();
+            frame.setVisible(false);
             mini18 thirdMinigame = new mini18();
-        } else if (currentPos == rn.nextInt(1, 3)) {
-            updateBoard(currentPlayer, 2, indicatePlayers.playerInfo);
-            notification.setText(oldNoti + " " + indicatePlayers.playerInfo[currentPlayer][1] + " landed on a ladder and went 2 spaces forward!");
-        } else if (currentPos == rn.nextInt(13, 14)) {
-            updateBoard(currentPlayer, 3, indicatePlayers.playerInfo);
-            notification.setText(oldNoti + " " + indicatePlayers.playerInfo[currentPlayer][1] + " landed on a ladder and went 3 spaces forward!");
-        } else if (currentPos == rn.nextInt(9, 11)) {
-            updateBoard(currentPlayer, -2, indicatePlayers.playerInfo);
-            notification.setText(oldNoti + " " + indicatePlayers.playerInfo[currentPlayer][1] + " landed on a snake and went 2 spaces backward!");
+        } else if (currentPos == Main.firstLadder) { // must change the way the notifications are set up, it will only save one of the notifications or use only one of the notifs
+            ladder = true;
+            int posChange = rn.nextInt(1, 2);
+            updateBoard(currentPlayer, posChange, indicatePlayers.playerInfo);
+        } else if (currentPos == Main.secondLadder) {
+            ladder = true;
+            int posChange = rn.nextInt(2, 3);
+            updateBoard(currentPlayer, posChange, indicatePlayers.playerInfo);
+        } else if (currentPos == Main.firstSnake) {
+            snake = true;
+            int posChange = rn.nextInt(-3, -1);
+            updateBoard(currentPlayer, posChange, indicatePlayers.playerInfo);
         } else if (currentPos == 22) {
-            updateBoard(currentPlayer, -4, indicatePlayers.playerInfo);
-            notification.setText(oldNoti + " " + indicatePlayers.playerInfo[currentPlayer][1] + " landed on a snake and went 4 spaces backward!");
+            snake = true;
+            int posChange = rn.nextInt(-3, -2);
+            updateBoard(currentPlayer, posChange, indicatePlayers.playerInfo);
         }
     }
 
@@ -160,11 +171,13 @@ public class MainUI implements ActionListener {
      */
     public static void updateBoard (int currentPlayer, int newPos, String[][] input) {
         try { // if the player position reaches over 24, the game ends
-            // removing old player position display
-            squares[Integer.parseInt(input[currentPlayer][2])].setText(squares[Integer.parseInt(input[currentPlayer][2])].getText().replaceAll(", " + (currentPlayer + 1), ""));
+            int oldPos = Integer.parseInt(input[currentPlayer][2]);
 
             // getting new player position
             input[currentPlayer][2] = Integer.toString(Integer.parseInt(input[currentPlayer][2]) + newPos);
+
+            // removing old player position display
+            squares[oldPos].setText(squares[oldPos].getText().replaceAll(", " + (currentPlayer + 1), ""));
 
             // adding player number to new position
             squares[Integer.parseInt(input[currentPlayer][2])].setText(squares[Integer.parseInt(input[currentPlayer][2])].getText() + ", " + (currentPlayer + 1));
@@ -177,18 +190,27 @@ public class MainUI implements ActionListener {
             indicatePlayers.playerInfo[currentPlayer][3] = Integer.toString(Integer.parseInt(indicatePlayers.playerInfo[currentPlayer][3]) + Integer.parseInt(squares[Integer.parseInt(input[currentPlayer][2])].getText().substring(0, index)));
 
             points[currentPlayer].setText(indicatePlayers.playerInfo[currentPlayer][3]);
-
-            // running events function to see if the player landed on a special square
-            events(currentPlayer, input);
-
-
+            
+            if (event && newPos > 0) {
+                notification.setText(input[currentPlayer][1] + " moved " + rollMove + " spaces." + indicatePlayers.playerInfo[currentPlayer][1] + " won the minigame and went " + newPos + " spaces forward!");
+                event = false;
+            } else if (event && newPos < 0) {
+                notification.setText(input[currentPlayer][1] + " moved " + rollMove + " spaces." + indicatePlayers.playerInfo[currentPlayer][1] + " lost the minigame and went " + Math.abs(newPos) + " spaces backward!");
+                event = false;
+            } else if (ladder) {
+                notification.setText(input[currentPlayer][1] + " moved " + rollMove + " spaces." + indicatePlayers.playerInfo[currentPlayer][1] + " landed on a ladder and went " + newPos + " spaces forward!");
+                ladder = false;
+            } else if (snake) {
+                notification.setText(input[currentPlayer][1] + " moved " + rollMove + " spaces." + indicatePlayers.playerInfo[currentPlayer][1] + " landed on a snake and went " + Math.abs(newPos) + " spaces backward!");
+                snake = false;
+            }
         } catch (ArrayIndexOutOfBoundsException e){
             frame.dispose();
             for (int i = 0; i < indicatePlayers.getPlayerNum(); i++) {
                 // chooses the player that reached the end first by selecting the highest player position
-                squaresWinner = currentPlayer;
-                if (Integer.parseInt(indicatePlayers.playerInfo[i][3]) > Integer.parseInt(indicatePlayers.playerInfo[pointsWinner][3])) {
-                    pointsWinner = Integer.parseInt(indicatePlayers.playerInfo[i][3]);
+                winners[0] = currentPlayer;
+                if (Integer.parseInt(indicatePlayers.playerInfo[i][3]) > Integer.parseInt(indicatePlayers.playerInfo[winners[1]][3])) {
+                    winners[1] = Integer.parseInt(indicatePlayers.playerInfo[i][3]);
                 }
             }
             // runs the ending program

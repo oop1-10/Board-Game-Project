@@ -8,7 +8,6 @@ public class mini12 implements ActionListener {
     JLabel text = new JLabel("<html>This is a 50/50 minigame.</br> You must pick between 2 choices, left or right.</br> If you guess correctly, you will move forward. Otherwise, you will move backwards.</html>");
     JButton right = new JButton("Right");
     JButton left = new JButton("Left");
-    public static int posChange;
     // hit or miss minigame
     mini12() {
         text.setLayout(null);
@@ -37,6 +36,7 @@ public class mini12 implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        int posChange;
         Random rn = new Random();
         int leftOrRight = rn.nextInt(0,1);
         if (e.getSource()==left) {
@@ -52,8 +52,9 @@ public class mini12 implements ActionListener {
                 posChange = rn.nextInt(-4, -1);
             }
         }
+        MainUI.event = true;
+        MainUI.updateBoard(MainUI.pastPlayer, posChange, indicatePlayers.playerInfo);
         minigameWindow.dispose();
-        MainUI again = new MainUI();
-        MainUI.updateBoard(MainUI.currentPlayer, posChange, indicatePlayers.playerInfo);
+        MainUI.frame.setVisible(true);
     }
 }

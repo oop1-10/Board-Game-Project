@@ -82,7 +82,6 @@ public class indicatePlayers implements ActionListener {
         if (e.getSource()==confirm) {
             for (int i = 0; i < getPlayerNum(); i++) {
                 visiblePlayerNames[i] = playerNames[i].getText();
-
             }
             // this is a loop to initialize the player info collected at the start of the game
             // loop through the first row of the array and list the player numbers
