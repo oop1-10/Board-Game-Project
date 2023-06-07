@@ -14,7 +14,7 @@ public class startGame implements ActionListener {
         myButton.addActionListener(this);
         // adding the start button to the screen
         frame.add(myButton);
-        // setting the frames inital values, this is almost always the same in every program, minus the frame size
+        // setting the frames initial values, this is almost always the same in every program, minus the frame size
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(420,420);
         frame.setLayout(null);

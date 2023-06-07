@@ -14,7 +14,7 @@ public class Main {
             if (i == 0 || i == 6 || i == 12 || i == 18 || i == firstLadder || i == secondLadder || i == firstSnake) {
                 pointsAmount[i] = 0;
             } else {
-                pointsAmount[i] = rn.nextInt(-1, 3);
+                pointsAmount[i] = rn.nextInt(-1, 4);
             }
         }
     }

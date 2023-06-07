@@ -61,6 +61,11 @@ public class mini18 implements ActionListener {
         minigameWindow.setLayout(null);
         minigameWindow.setVisible(true);
     }
+
+    /**
+     * This function occurs whenever an input is taken in,
+     * @param e the event to be processed
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         Random rn = new Random();

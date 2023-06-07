@@ -78,7 +78,7 @@ public class indicatePlayers implements ActionListener {
                 text.setVisible(false);
             }
         }
-        // when this button is pressed, it will save all of the names entered and close the window, while also opening the MainUI window.  Lastly, it will call the player info initializer function
+        // when this button is pressed, it will save all the names entered and close the window, while also opening the MainUI window.  Lastly, it will call the player info initializer function
         if (e.getSource()==confirm) {
             for (int i = 0; i < getPlayerNum(); i++) {
                 visiblePlayerNames[i] = playerNames[i].getText();

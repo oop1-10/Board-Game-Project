@@ -2,7 +2,6 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Random;
-import java.util.concurrent.TimeUnit;
 
 public class mini6 implements ActionListener {
     static Random rn = new Random();
@@ -12,7 +11,6 @@ public class mini6 implements ActionListener {
     static JFrame minigameWindow = new JFrame();
     int randNum = rn.nextInt(1, 10);
     public static int attempts = 0;
-    public static int posChange;
 
     mini6() {
         guess.setFocusable(false);
@@ -46,7 +44,7 @@ public class mini6 implements ActionListener {
                 try {
                     if (Integer.parseInt(guessNum.getText()) == randNum && Integer.parseInt(guessNum.getText()) <= 10) {
                         MainUI.events[0] = true;
-                        posChange = rn.nextInt(1, 4);
+                        int posChange = rn.nextInt(1, 4);
                         minigameWindow.dispose();
                         MainUI.frame.setVisible(true);
                         MainUI.updateBoard(MainUI.currentPlayer, posChange, indicatePlayers.playerInfo);
@@ -61,7 +59,7 @@ public class mini6 implements ActionListener {
                 }
             } else {
                 MainUI.events[0] = true;
-                posChange = rn.nextInt(-4, -1);
+                int posChange = rn.nextInt(-4, -1);
                 minigameWindow.dispose();
                 MainUI.frame.setVisible(true);
                 MainUI.updateBoard(MainUI.pastPlayer, posChange, indicatePlayers.playerInfo);

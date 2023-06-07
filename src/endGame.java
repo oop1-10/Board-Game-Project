@@ -11,7 +11,7 @@ public class endGame implements ActionListener {
     endGame() {
         endText.setBounds(50,100, 200, 80);
         endText.setLayout(null);
-        endText.setText("<html>The player with the most points was " + MainUI.winners[1] + ". The player who reached the end first was " + MainUI.winners[0] + ". We are all winners here!</html>");
+        endText.setText("<html>The player with the most points was " + indicatePlayers.playerInfo[MainUI.winners[1]][1] + ". The player who reached the end first was " + indicatePlayers.playerInfo[MainUI.winners[0]][1] + ". We are all winners here!</html>");
         endText.setFocusable(false);
 
         close.setVisible(true);

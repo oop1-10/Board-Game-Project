@@ -15,7 +15,6 @@ public class MainUI implements ActionListener {
     static JLabel[] names = new JLabel[indicatePlayers.playerNum];
     static JLabel[] points  = new JLabel[indicatePlayers.playerNum];
     JLabel[] text = new JLabel[2];
-    // turn these boolean into array?
     public static boolean[] events = new boolean[3];
     public static int rollMove;
 
@@ -186,18 +185,21 @@ public class MainUI implements ActionListener {
             int index = squares[Integer.parseInt(input[currentPlayer][2])].getText().indexOf(",");
             indicatePlayers.playerInfo[currentPlayer][3] = Integer.toString(Integer.parseInt(indicatePlayers.playerInfo[currentPlayer][3]) + Integer.parseInt(squares[Integer.parseInt(input[currentPlayer][2])].getText().substring(0, index)));
 
+            // changing the current players text display
             points[currentPlayer].setText(indicatePlayers.playerInfo[currentPlayer][3]);
-            
-            if (events[0] && newPos > 0) {
+
+            // this statement identifies the minigame event the player just experienced and updates the notification accordingly
+            if (events[0] && newPos > 0) { // if the player comes out of a minigame, and the result position is greater than 0, than they won the minigame and change the notification
                 notification.setText(input[currentPlayer][1] + " moved " + rollMove + " spaces. " + indicatePlayers.playerInfo[currentPlayer][1] + " won the minigame and went " + newPos + " spaces forward!");
-                events[0] = false;
-            } else if (events[0] && newPos < 0) {
+            } else {// if the player comes out of a minigame, and the result position is greater than 0, than they lost the minigame and change the notification
                 notification.setText(input[currentPlayer][1] + " moved " + rollMove + " spaces. " + indicatePlayers.playerInfo[currentPlayer][1] + " lost the minigame and went " + Math.abs(newPos) + " spaces backward!");
-                events[0] = false;
-            } else if (events[1]) {
+            }
+            events[0] = false;
+            // this statement identifies the snake or ladder event the player just experienced and updates the notification accordingly
+            if (events[1]) {// if the player lands on a ladder, then update the notification accordingly
                 notification.setText(input[currentPlayer][1] + " moved " + rollMove + " spaces. " + indicatePlayers.playerInfo[currentPlayer][1] + " landed on a ladder and went " + newPos + " spaces forward!");
                 events[1] = false;
-            } else if (events[2]) {
+            } else if (events[2]) {// if the player lands on a snake, then update the notification accordingly
                 notification.setText(input[currentPlayer][1] + " moved " + rollMove + " spaces. " + indicatePlayers.playerInfo[currentPlayer][1] + " landed on a snake and went " + Math.abs(newPos) + " spaces backward!");
                 events[2] = false;
             }
