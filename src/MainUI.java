@@ -3,6 +3,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Random;
+import javax.swing.BorderFactory;
+import javax.swing.border.Border;
 
 public class MainUI implements ActionListener {
     public static int currentPlayer = 0;
@@ -13,10 +15,11 @@ public class MainUI implements ActionListener {
     JButton roll = new JButton("Roll");
     public static int[] winners = new int[2];
     static JLabel[] names = new JLabel[indicatePlayers.playerNum];
-    static JLabel[] points  = new JLabel[indicatePlayers.playerNum];
+    static JLabel[] points = new JLabel[indicatePlayers.playerNum];
     JLabel[] text = new JLabel[2];
     public static boolean[] events = new boolean[3];
     public static int rollMove;
+    Border border = BorderFactory.createLineBorder(Color.BLACK);
 
     /**
      * This is a constructor used to build the window, every application I have made uses these to enable window creation.
@@ -27,20 +30,29 @@ public class MainUI implements ActionListener {
 
         for (int i = 0; i < squares.length; i++) {
             squares[i] = new JTextArea(Integer.toString(Main.pointsAmount[i]));
+            squares[i].setBorder(BorderFactory.createCompoundBorder(border,
+                    BorderFactory.createEmptyBorder(3, 3, 3, 3)));
             // this will change the x and y values so that the boxes will be created in a rectangular shape
             if (i < 6) {
-                squares[i].setBounds(x, y, 40, 40);
-                x += 50;
+                squares[i].setBounds(x, y, 90, 90);
+                x += 100;
             } else if (i < 12) {
-                squares[i].setBounds(x, y, 40, 40);
-                y += 50;
+                squares[i].setBounds(x, y, 90, 90);
+                y += 100;
             } else if (i < 18) {
-                squares[i].setBounds(x, y, 40, 40);
-                x -= 50;
+                squares[i].setBounds(x, y, 90, 90);
+                x -= 100;
             } else {
-                squares[i].setBounds(x, y, 40, 40);
-                y -= 50;
+                squares[i].setBounds(x, y, 90, 90);
+                y -= 100;
             }
+
+            if (i % 2 == 0) {
+                squares[i].setBackground(Color.white);
+            } else {
+                squares[i].setBackground(Color.gray);
+            }
+
             // setting layout, text, focusability and adding the ability to wrap lines
             squares[i].setLayout(null);
             squares[i].setFocusable(false);
@@ -54,11 +66,11 @@ public class MainUI implements ActionListener {
             names[i] = new JLabel(indicatePlayers.playerInfo[i][1]);
             points[i] = new JLabel(indicatePlayers.playerInfo[i][3]);
             // setting bounds, font, layout and focusability
-            names[i].setBounds(400, y, 100, 30);
+            names[i].setBounds(750, y, 100, 30);
             names[i].setFont(largeFont);
             names[i].setLayout(null);
             names[i].setFocusable(false);
-            points[i].setBounds(520, y, 60, 30);
+            points[i].setBounds(870, y, 60, 30);
             points[i].setFont(largeFont);
             points[i].setLayout(null);
             points[i].setFocusable(false);
@@ -69,28 +81,32 @@ public class MainUI implements ActionListener {
         }
         // creating text to clarify what is being shown
         text[0] = new JLabel("Names: ");
-        text[0].setBounds(400, 20,50,15);
+        text[0].setBounds(750, 20, 50, 15);
         text[0].setLayout(null);
         // creating text more text
         text[1] = new JLabel("Points: ");
-        text[1].setBounds(500, 20,50,15);
+        text[1].setBounds(870, 20, 50, 15);
         text[1].setLayout(null);
         // configuring a roll button so that the player can roll the dice
         roll.setFocusable(false);
-        roll.setBounds(650, 100, 100, 40);
+        roll.setBounds(950, 100, 100, 40);
         roll.addActionListener(this);
         roll.setLayout(null);
         // setting up a notification box to tell you what is going on
-        notification.setBounds(400, 400, 200, 50);
+        notification.setBounds(800, 400, 200, 55);
         notification.setFocusable(false);
         notification.setLineWrap(true);
         notification.setLayout(null);
+        notification.setBorder(BorderFactory.createCompoundBorder(border,
+                BorderFactory.createEmptyBorder(3, 3, 3, 3)));
         // adding the now configured buttons and texts
         frame.add(roll);
         frame.add(notification);
-        for (JLabel jLabel : text) {frame.add(jLabel);}
+        for (JLabel jLabel : text) {
+            frame.add(jLabel);
+        }
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(800,600);
+        frame.setSize(1500, 1000);
         frame.setLayout(null);
         frame.setVisible(true);
     }
@@ -99,16 +115,16 @@ public class MainUI implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         Random rn = new Random();
         // when roll button is clicked, run function
-        if (e.getSource()==roll) {
+        if (e.getSource() == roll) {
             pastPlayer = currentPlayer;
-            rollMove = rn.nextInt(1,6);
+            rollMove = rn.nextInt(1, 6);
             // calling update board function
             updateBoard(currentPlayer, rollMove, indicatePlayers.playerInfo);
             // running events function to see if the player landed on a special square
             events(currentPlayer, indicatePlayers.playerInfo);
 
             // when the player number becomes greater than the total amount, it resets it to zero
-            if (currentPlayer == indicatePlayers.getPlayerNum()-1) {
+            if (currentPlayer == indicatePlayers.getPlayerNum() - 1) {
                 currentPlayer = 0;
             } else {
                 currentPlayer++;
@@ -121,14 +137,13 @@ public class MainUI implements ActionListener {
     /**
      * Whenever a player lands on a special tile, this function identifies that, and runs the required external functions
      * @param currentPlayer - this identifies the current player
-     * @param input - this is the current data collected
+     * @param input         - this is the current data collected
      */
-    public static void events (int currentPlayer,String[][] input) {
+    public static void events(int currentPlayer, String[][] input) {
         Random rn = new Random();
         int currentPos = Integer.parseInt(input[currentPlayer][2]);
         // if the player lands on one of these squares, start a minigame or move forward
         if (currentPos == 6) {
-            mini6.attempts = 0;
             frame.setVisible(false);
             mini6 firstMinigame = new mini6();
         } else if (currentPos == 12) {
@@ -162,10 +177,10 @@ public class MainUI implements ActionListener {
      * the amount of spaces to move, which is generated and inputted before running,
      * and it also takes in the collected information throughout the game.
      * @param currentPlayer - this identifies which players position is changing
-     * @param newPos - this is the difference in position the player is moving
-     * @param input - this is the current data that has been collected
+     * @param newPos        - this is the difference in position the player is moving
+     * @param input         - this is the current data that has been collected
      */
-    public static void updateBoard (int currentPlayer, int newPos, String[][] input) {
+    public static void updateBoard(int currentPlayer, int newPos, String[][] input) {
         try { // if the player position reaches over 24, the game ends
             int oldPos = Integer.parseInt(input[currentPlayer][2]);
 
@@ -191,7 +206,7 @@ public class MainUI implements ActionListener {
             // this statement identifies the minigame event the player just experienced and updates the notification accordingly
             if (events[0] && newPos > 0) { // if the player comes out of a minigame, and the result position is greater than 0, than they won the minigame and change the notification
                 notification.setText(input[currentPlayer][1] + " moved " + rollMove + " spaces. " + indicatePlayers.playerInfo[currentPlayer][1] + " won the minigame and went " + newPos + " spaces forward!");
-            } else {// if the player comes out of a minigame, and the result position is greater than 0, than they lost the minigame and change the notification
+            } else if (events[0] && newPos < 0) {// if the player comes out of a minigame, and the result position is greater than 0, than they lost the minigame and change the notification
                 notification.setText(input[currentPlayer][1] + " moved " + rollMove + " spaces. " + indicatePlayers.playerInfo[currentPlayer][1] + " lost the minigame and went " + Math.abs(newPos) + " spaces backward!");
             }
             events[0] = false;
@@ -203,7 +218,7 @@ public class MainUI implements ActionListener {
                 notification.setText(input[currentPlayer][1] + " moved " + rollMove + " spaces. " + indicatePlayers.playerInfo[currentPlayer][1] + " landed on a snake and went " + Math.abs(newPos) + " spaces backward!");
                 events[2] = false;
             }
-        } catch (ArrayIndexOutOfBoundsException e){
+        } catch (ArrayIndexOutOfBoundsException e) {
             frame.dispose();
             for (int i = 0; i < indicatePlayers.getPlayerNum(); i++) {
                 // chooses the player that reached the end first by selecting the highest player position

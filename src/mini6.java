@@ -36,18 +36,25 @@ public class mini6 implements ActionListener {
         minigameWindow.setVisible(true);
     }
 
+    /**
+     * This will run whenever the "Guess" button is pressed, first it checks for the initial input.
+     * Once the initial input is detected, it checks if the number given is correct, if it isn't it removes one attempt,
+     * and displays the new amount of attempts on the screen.  If the user enters a non number, it will not accept it.
+     * @param e the event to be processed
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource()==guess) {
             Random rn = new Random();
             if (attempts < 2) {
                 try {
-                    if (Integer.parseInt(guessNum.getText()) == randNum && Integer.parseInt(guessNum.getText()) <= 10) {
+                    if (Integer.parseInt(guessNum.getText()) == randNum) {
                         MainUI.events[0] = true;
                         int posChange = rn.nextInt(1, 4);
                         minigameWindow.dispose();
                         MainUI.frame.setVisible(true);
                         MainUI.updateBoard(MainUI.currentPlayer, posChange, indicatePlayers.playerInfo);
+                        attempts = 0;
                     } else if (Integer.parseInt(guessNum.getText()) != randNum && Integer.parseInt(guessNum.getText()) <= 10) {
                         attempts++;
                         guessText.setText("<html>Guess a number<br/>between 1-10.<br/>You have " + (3-attempts) + " attempts.</html>");
@@ -63,6 +70,7 @@ public class mini6 implements ActionListener {
                 minigameWindow.dispose();
                 MainUI.frame.setVisible(true);
                 MainUI.updateBoard(MainUI.pastPlayer, posChange, indicatePlayers.playerInfo);
+                attempts = 0;
             }
         }
     }

@@ -1,4 +1,6 @@
 import javax.swing.*;
+import javax.swing.border.Border;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -6,6 +8,7 @@ import java.awt.event.ActionListener;
 public class indicatePlayers implements ActionListener {
     JFrame frame = new JFrame("Player Indication");
     Integer[] playerNumbers = {2, 3, 4};
+    Border border = BorderFactory.createLineBorder(Color.BLACK);
     public static String[] visiblePlayerNames = new String[4];
     public static int playerNum = 4;
     public static String[][] playerInfo = new String[playerNum][4];
@@ -31,6 +34,8 @@ public class indicatePlayers implements ActionListener {
 
             playerNames[i].setBounds(x + 60, y + i * 40, 100, 30);
             playerNames[i].setVisible(false);
+            playerNames[i].setBorder(BorderFactory.createCompoundBorder(border,
+                    BorderFactory.createEmptyBorder(3, 3, 3, 3)));
             frame.add(playerNames[i]);
             frame.add(names[i]);
         }
@@ -97,7 +102,8 @@ public class indicatePlayers implements ActionListener {
             frame.dispose();
             MainUI openFinally = new MainUI();
             for (int i = 0; i < getPlayerNum(); i++) {
-                MainUI.updateBoard(i, 0, indicatePlayers.playerInfo);
+                // adding player number to new position
+                MainUI.squares[Integer.parseInt(playerInfo[i][2])].setText(MainUI.squares[Integer.parseInt(playerInfo[i][2])].getText() + ", " + (i + 1));
             }
         }
     }
