@@ -23,7 +23,7 @@ public class MainUI implements ActionListener {
     ImageIcon image;
     JButton skipTurn = new JButton("Skip turn");
     JButton accept = new JButton("Accept point loss");
-    boolean[] skipped = new boolean[indicatePlayers.getPlayerNum()];
+    int[] skipped = new int[indicatePlayers.getPlayerNum()];
 
     /**
      * This is a constructor used to build the window, every application I have made uses these to enable window creation.
@@ -142,67 +142,76 @@ public class MainUI implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         Random rn = new Random();
+        int temp;
         // when roll button is clicked, run function
         if (e.getSource() == roll) {
             pastPlayer = currentPlayer;
 
-            if (!skipped[currentPlayer]) {
-                rollMove = rn.nextInt(1, 6);
-                // calling update board function
-                updateBoard(currentPlayer, rollMove, indicatePlayers.playerInfo);
+            // dice variable
+            rollMove = rn.nextInt(1, 6);
 
-                if (points(currentPlayer, indicatePlayers.playerInfo) < 0) {
-                    skipTurn.setVisible(true);
-                    accept.setVisible(true);
-                    roll.setVisible(false);
-                } else {
-                    indicatePlayers.playerInfo[currentPlayer][3] = Integer.toString(Integer.parseInt(indicatePlayers.playerInfo[currentPlayer][3]) + points(currentPlayer, indicatePlayers.playerInfo));
-                    // changing the current players points display
-                    points[currentPlayer].setText(indicatePlayers.playerInfo[currentPlayer][3]);
-                    // running events function to see if the player landed on a special square
-                    events(currentPlayer, indicatePlayers.playerInfo);
+            temp = Integer.parseInt(indicatePlayers.playerInfo[currentPlayer][2]) + rollMove;
 
-                    // when the player number becomes greater than the total amount, it resets it to zero
-                    if (currentPlayer == indicatePlayers.getPlayerNum() - 1) {
-                        currentPlayer = 0;
-                    } else {
-                        currentPlayer++;
-                    }
-                    // changing highlighted player
-                    names[pastPlayer].setForeground(Color.black);
-                    names[currentPlayer].setForeground(Color.red);
-                }
-            }
-        } else {
-            skipped[currentPlayer] = false;
-            // since player skipped their turn, skip their turn
-            if (currentPlayer == indicatePlayers.getPlayerNum() - 1) {
-                currentPlayer = 0;
+            if (points(temp) < 0) {
+                skipTurn.setVisible(true);
+                accept.setVisible(true);
+                roll.setVisible(false);
             } else {
-                currentPlayer++;
+                updateBoard(currentPlayer, rollMove, indicatePlayers.playerInfo);
+                // changing players' points variable with the new points amount
+                indicatePlayers.playerInfo[currentPlayer][3] = Integer.toString(Integer.parseInt(indicatePlayers.playerInfo[currentPlayer][3]) + points(temp));
+                // changing the current players points display
+                points[currentPlayer].setText(indicatePlayers.playerInfo[currentPlayer][3]);
+                // running events function to see if the player landed on a special square
+                events(currentPlayer, indicatePlayers.playerInfo);
+            }
+            if (skipped[currentPlayer] == 0) {
+                // when the player number becomes greater than the total amount, it resets it to zero
+                playerIncrement();
+                // changing highlighted player
+                names[pastPlayer].setForeground(Color.black);
+                names[currentPlayer].setForeground(Color.red);
+            } else {
+                skipped[currentPlayer]+= 1;
+                if (skipped[currentPlayer] == 3) {
+                    skipped[currentPlayer] = 0;
+                    playerIncrement();
+                }
             }
         }
         if (e.getSource() == skipTurn) {
-
             // changing visibility
             roll.setVisible(true);
             skipTurn.setVisible(false);
             accept.setVisible(false);
+            pastPlayer = currentPlayer;
+            skipped[currentPlayer] = 1;
 
-            skipped[currentPlayer] = true;
-            // when the player number becomes greater than the total amount, it resets it to zero
-            if (currentPlayer == indicatePlayers.getPlayerNum() - 1) {
-                currentPlayer = 0;
-            } else {
-                currentPlayer++;
-            }
-            // changing highlighted player
-            names[pastPlayer].setForeground(Color.black);
-            names[currentPlayer].setForeground(Color.red);
+            playerIncrement();
+
+//            for (int i = 0; i < 2;) {
+//                if (e.getSource()==roll) {
+//                    // dice variable
+//                    rollMove = rn.nextInt(1, 6);
+//                    // calling update board function
+//                    updateBoard(currentPlayer, rollMove, indicatePlayers.playerInfo);
+//                    // changing players' points variable with the new points amount
+//                    indicatePlayers.playerInfo[currentPlayer][3] = Integer.toString(Integer.parseInt(indicatePlayers.playerInfo[currentPlayer][3]) + points(currentPlayer, indicatePlayers.playerInfo));
+//                    // changing the current players points display
+//                    points[currentPlayer].setText(indicatePlayers.playerInfo[currentPlayer][3]);
+//                    // running events function to see if the player landed on a special square
+//                    events(currentPlayer, indicatePlayers.playerInfo);
+//                    i++;
+//                }
+//            }
+//            names[pastPlayer].setForeground(Color.black);
+//            names[currentPlayer].setForeground(Color.red);
+//            currentPlayer = pastPlayer;
         }
         if (e.getSource() == accept) {
+            temp = Integer.parseInt(indicatePlayers.playerInfo[currentPlayer][2]) + rollMove;
             // adding negative points to player total
-            indicatePlayers.playerInfo[currentPlayer][3] = Integer.toString(Integer.parseInt(indicatePlayers.playerInfo[currentPlayer][3]) + points(currentPlayer, indicatePlayers.playerInfo));
+            indicatePlayers.playerInfo[currentPlayer][3] = Integer.toString(Integer.parseInt(indicatePlayers.playerInfo[currentPlayer][3]) + points(temp));
             // changing the current players points display
             points[currentPlayer].setText(indicatePlayers.playerInfo[currentPlayer][3]);
 
@@ -212,13 +221,10 @@ public class MainUI implements ActionListener {
             roll.setVisible(true);
             skipTurn.setVisible(false);
             accept.setVisible(false);
+            pastPlayer = currentPlayer;
 
             // when the player number becomes greater than the total amount, it resets it to zero
-            if (currentPlayer == indicatePlayers.getPlayerNum() - 1) {
-                currentPlayer = 0;
-            } else {
-                currentPlayer++;
-            }
+            playerIncrement();
             names[pastPlayer].setForeground(Color.black);
             names[currentPlayer].setForeground(Color.red);
         }
@@ -319,10 +325,24 @@ public class MainUI implements ActionListener {
         }
     }
 
-    public static int points (int currentPlayer, String[][] input) {
-        // finding the index and adding the points earned from
-        int index = squares[Integer.parseInt(input[currentPlayer][2])].getText().indexOf(",");
-        int newPoints = Integer.parseInt(squares[Integer.parseInt(input[currentPlayer][2])].getText().substring(0, index));
-        return newPoints;
+    public static int points (int position) {
+        int i = findFirstDigitIndex(squares[position].getText());
+        return Integer.parseInt(squares[position].getText().substring(0, i));
+    }
+
+    private static void playerIncrement () {
+        if (currentPlayer == indicatePlayers.getPlayerNum() - 1) {
+            currentPlayer = 0;
+        } else {
+            currentPlayer++;
+        }
+    }
+    public static int findFirstDigitIndex(String input) {
+        for (int i = 0; i < input.length(); i++) {
+            if (Character.isDigit(input.charAt(i))) {
+                return i;
+            }
+        }
+        return 1; // Return -1 if no digit is found
     }
 }

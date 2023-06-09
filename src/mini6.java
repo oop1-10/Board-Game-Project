@@ -59,7 +59,7 @@ public class mini6 implements ActionListener {
                         int posChange = rn.nextInt(1, 4);
                         minigameWindow.dispose();
                         MainUI.frame.setVisible(true);
-                        MainUI.updateBoard(MainUI.currentPlayer, posChange, indicatePlayers.playerInfo);
+                        MainUI.updateBoard(MainUI.pastPlayer, posChange, indicatePlayers.playerInfo);
                         attempts = 0;
                     } else if (Integer.parseInt(guessNum.getText()) != randNum && Integer.parseInt(guessNum.getText()) <= 10) {
                         attempts++;
