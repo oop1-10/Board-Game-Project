@@ -18,7 +18,6 @@ public class endGame implements ActionListener {
         close.setVisible(true);
         close.setLayout(null);
         close.addActionListener(this);
-        close.setFocusable(false);
 
         frame.add(close);
         frame.add(endText);

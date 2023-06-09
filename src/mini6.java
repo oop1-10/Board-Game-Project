@@ -1,22 +1,18 @@
 import javax.swing.*;
-import javax.swing.border.Border;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Random;
 
 public class mini6 implements ActionListener {
     static Random rn = new Random();
-    Border border = BorderFactory.createLineBorder(Color.BLACK);
     static JButton guess = new JButton("Guess!");
     static JTextArea guessNum = new JTextArea();
     static JLabel guessText = new JLabel();
     static JFrame minigameWindow = new JFrame();
     int randNum = rn.nextInt(1, 10);
-    public int attempts;
+    public static int attempts = 0;
 
     mini6() {
-        attempts = 0;
         guess.setFocusable(false);
         guess.setBounds(100, 200, 100 ,40);
         guess.addActionListener(this);
@@ -24,8 +20,6 @@ public class mini6 implements ActionListener {
 
         guessNum.setLayout(null);
         guessNum.setBounds(100, 120, 70, 20);
-        guessNum.setBorder(BorderFactory.createCompoundBorder(border,
-                BorderFactory.createEmptyBorder(3, 3, 3, 3)));
 
         guessText.setLayout(null);
         guessText.setText("<html>Guess a number<br/>between 1-10.<br/>You have 3 attempts.</html>");
