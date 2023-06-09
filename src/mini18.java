@@ -1,4 +1,6 @@
 import javax.swing.*;
+import javax.swing.border.Border;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Objects;
@@ -16,6 +18,7 @@ public class mini18 implements ActionListener {
     static JTextArea userEntry = new JTextArea();
     static JLabel text = new JLabel();
     static JLabel enterText = new JLabel("Enter the string here: ");
+    Border border = BorderFactory.createLineBorder(Color.BLACK);
 
 
     // memory game
@@ -38,6 +41,7 @@ public class mini18 implements ActionListener {
         confirm.setLayout(null);
         confirm.setVisible(false);
 
+        text.setVisible(true);
         text.setBounds(75, 45, 200, 150);
         text.setLayout(null);
         text.setText("<html>This is a memory game,<br>you have 10 seconds to memorize this string of characters after you press start. </br>After the 10 seconds expires,</br> type in the string in the text box and click confirm.</br>If you don't click confirm in time,</br>your entry will be saved and assessed.</html>");
@@ -45,6 +49,8 @@ public class mini18 implements ActionListener {
         userEntry.setBounds(110, 160, 100, 30);
         userEntry.setVisible(false);
         userEntry.setLayout(null);
+        userEntry.setBorder(BorderFactory.createCompoundBorder(border,
+                BorderFactory.createEmptyBorder(3, 3, 3, 3)));
 
         enterText.setVisible(false);
         enterText.setBounds(80, 60, 200, 150);

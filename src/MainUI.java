@@ -20,6 +20,10 @@ public class MainUI implements ActionListener {
     public static boolean[] events = new boolean[3];
     public static int rollMove;
     Border border = BorderFactory.createLineBorder(Color.BLACK);
+    ImageIcon image;
+    JButton skipTurn = new JButton("Skip turn");
+    JButton accept = new JButton("Accept point loss");
+    boolean[] skipped = new boolean[indicatePlayers.getPlayerNum()];
 
     /**
      * This is a constructor used to build the window, every application I have made uses these to enable window creation.
@@ -79,6 +83,13 @@ public class MainUI implements ActionListener {
             frame.add(names[i]);
             y += 40;
         }
+
+        try {
+            image = new ImageIcon(getClass().getResource(""));
+        } catch (Exception e) {
+            System.out.print("Image not found!");
+        }
+
         // creating text to clarify what is being shown
         text[0] = new JLabel("Names: ");
         text[0].setBounds(750, 20, 50, 15);
@@ -92,6 +103,21 @@ public class MainUI implements ActionListener {
         roll.setBounds(950, 100, 100, 40);
         roll.addActionListener(this);
         roll.setLayout(null);
+
+        //skip turn to avoid negative points
+        skipTurn.addActionListener(this);
+        skipTurn.setVisible(false);
+        skipTurn.setFocusable(false);
+        skipTurn.setBounds(870, 70, 100, 40);
+        skipTurn.setLayout(null);
+
+        //accept negative point loss
+        accept.addActionListener(this);
+        accept.setVisible(false);
+        accept.setFocusable(false);
+        accept.setBounds(980, 70, 100, 40);
+        accept.setLayout(null);
+
         // setting up a notification box to tell you what is going on
         notification.setBounds(800, 400, 200, 55);
         notification.setFocusable(false);
@@ -102,6 +128,8 @@ public class MainUI implements ActionListener {
         // adding the now configured buttons and texts
         frame.add(roll);
         frame.add(notification);
+        frame.add(accept);
+        frame.add(skipTurn);
         for (JLabel jLabel : text) {
             frame.add(jLabel);
         }
@@ -117,11 +145,73 @@ public class MainUI implements ActionListener {
         // when roll button is clicked, run function
         if (e.getSource() == roll) {
             pastPlayer = currentPlayer;
-            rollMove = rn.nextInt(1, 6);
-            // calling update board function
-            updateBoard(currentPlayer, rollMove, indicatePlayers.playerInfo);
+
+            if (!skipped[currentPlayer]) {
+                rollMove = rn.nextInt(1, 6);
+                // calling update board function
+                updateBoard(currentPlayer, rollMove, indicatePlayers.playerInfo);
+
+                if (points(currentPlayer, indicatePlayers.playerInfo) < 0) {
+                    skipTurn.setVisible(true);
+                    accept.setVisible(true);
+                    roll.setVisible(false);
+                } else {
+                    indicatePlayers.playerInfo[currentPlayer][3] = Integer.toString(Integer.parseInt(indicatePlayers.playerInfo[currentPlayer][3]) + points(currentPlayer, indicatePlayers.playerInfo));
+                    // changing the current players points display
+                    points[currentPlayer].setText(indicatePlayers.playerInfo[currentPlayer][3]);
+                    // running events function to see if the player landed on a special square
+                    events(currentPlayer, indicatePlayers.playerInfo);
+
+                    // when the player number becomes greater than the total amount, it resets it to zero
+                    if (currentPlayer == indicatePlayers.getPlayerNum() - 1) {
+                        currentPlayer = 0;
+                    } else {
+                        currentPlayer++;
+                    }
+                    // changing highlighted player
+                    names[pastPlayer].setForeground(Color.black);
+                    names[currentPlayer].setForeground(Color.red);
+                }
+            }
+        } else {
+            skipped[currentPlayer] = false;
+            // since player skipped their turn, skip their turn
+            if (currentPlayer == indicatePlayers.getPlayerNum() - 1) {
+                currentPlayer = 0;
+            } else {
+                currentPlayer++;
+            }
+        }
+        if (e.getSource() == skipTurn) {
+
+            // changing visibility
+            roll.setVisible(true);
+            skipTurn.setVisible(false);
+            accept.setVisible(false);
+
+            skipped[currentPlayer] = true;
+            // when the player number becomes greater than the total amount, it resets it to zero
+            if (currentPlayer == indicatePlayers.getPlayerNum() - 1) {
+                currentPlayer = 0;
+            } else {
+                currentPlayer++;
+            }
+            // changing highlighted player
+            names[pastPlayer].setForeground(Color.black);
+            names[currentPlayer].setForeground(Color.red);
+        }
+        if (e.getSource() == accept) {
+            // adding negative points to player total
+            indicatePlayers.playerInfo[currentPlayer][3] = Integer.toString(Integer.parseInt(indicatePlayers.playerInfo[currentPlayer][3]) + points(currentPlayer, indicatePlayers.playerInfo));
+            // changing the current players points display
+            points[currentPlayer].setText(indicatePlayers.playerInfo[currentPlayer][3]);
+
             // running events function to see if the player landed on a special square
             events(currentPlayer, indicatePlayers.playerInfo);
+
+            roll.setVisible(true);
+            skipTurn.setVisible(false);
+            accept.setVisible(false);
 
             // when the player number becomes greater than the total amount, it resets it to zero
             if (currentPlayer == indicatePlayers.getPlayerNum() - 1) {
@@ -135,7 +225,10 @@ public class MainUI implements ActionListener {
     }
 
     /**
-     * Whenever a player lands on a special tile, this function identifies that, and runs the required external functions
+     * Whenever a player lands on a special tile, this function identifies that, and runs the required external functions.
+     * If a player lands on a minigame tile, it will run the appropriate file for that minigame.
+     * If the player lands on a ladder, it will launch them forward a couple spaces.
+     * If a player lands a snake, it will send them backward a few spaces.
      * @param currentPlayer - this identifies the current player
      * @param input         - this is the current data collected
      */
@@ -144,6 +237,7 @@ public class MainUI implements ActionListener {
         int currentPos = Integer.parseInt(input[currentPlayer][2]);
         // if the player lands on one of these squares, start a minigame or move forward
         if (currentPos == 6) {
+            //mini6.attempts = 0;
             frame.setVisible(false);
             mini6 firstMinigame = new mini6();
         } else if (currentPos == 12) {
@@ -188,20 +282,13 @@ public class MainUI implements ActionListener {
             input[currentPlayer][2] = Integer.toString(Integer.parseInt(input[currentPlayer][2]) + newPos);
 
             // removing old player position display
-            squares[oldPos].setText(squares[oldPos].getText().replaceAll(", " + (currentPlayer + 1), ""));
+            squares[oldPos].setText(squares[oldPos].getText().replaceAll(", " + input[currentPlayer][1], ""));
 
-            // adding player number to new position
-            squares[Integer.parseInt(input[currentPlayer][2])].setText(squares[Integer.parseInt(input[currentPlayer][2])].getText() + ", " + (currentPlayer + 1));
+            // adding player name to new position
+            squares[Integer.parseInt(input[currentPlayer][2])].setText(squares[Integer.parseInt(input[currentPlayer][2])].getText() + ", " + input[currentPlayer][1]);
 
             // adding notification of player's position change
             notification.setText(input[currentPlayer][1] + " moved " + newPos + " spaces.");
-
-            // finding the index and adding the points earned from
-            int index = squares[Integer.parseInt(input[currentPlayer][2])].getText().indexOf(",");
-            indicatePlayers.playerInfo[currentPlayer][3] = Integer.toString(Integer.parseInt(indicatePlayers.playerInfo[currentPlayer][3]) + Integer.parseInt(squares[Integer.parseInt(input[currentPlayer][2])].getText().substring(0, index)));
-
-            // changing the current players text display
-            points[currentPlayer].setText(indicatePlayers.playerInfo[currentPlayer][3]);
 
             // this statement identifies the minigame event the player just experienced and updates the notification accordingly
             if (events[0] && newPos > 0) { // if the player comes out of a minigame, and the result position is greater than 0, than they won the minigame and change the notification
@@ -230,5 +317,12 @@ public class MainUI implements ActionListener {
             // runs the ending program
             endGame ending = new endGame();
         }
+    }
+
+    public static int points (int currentPlayer, String[][] input) {
+        // finding the index and adding the points earned from
+        int index = squares[Integer.parseInt(input[currentPlayer][2])].getText().indexOf(",");
+        int newPoints = Integer.parseInt(squares[Integer.parseInt(input[currentPlayer][2])].getText().substring(0, index));
+        return newPoints;
     }
 }

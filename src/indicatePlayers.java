@@ -73,6 +73,7 @@ public class indicatePlayers implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         // when this button is pressed, it will save the amount of players and reveal the boxes for names
         if (e.getSource()==button) {
+            // save the entered number into a variable
             playerNum = (int) playerAmount.getSelectedItem();
             for (int i = 0; i < getPlayerNum(); i++) {
                 playerNames[i].setVisible(true);
@@ -103,7 +104,7 @@ public class indicatePlayers implements ActionListener {
             MainUI openFinally = new MainUI();
             for (int i = 0; i < getPlayerNum(); i++) {
                 // adding player number to new position
-                MainUI.squares[Integer.parseInt(playerInfo[i][2])].setText(MainUI.squares[Integer.parseInt(playerInfo[i][2])].getText() + ", " + (i + 1));
+                MainUI.squares[Integer.parseInt(playerInfo[i][2])].setText(MainUI.squares[Integer.parseInt(playerInfo[i][2])].getText() + ", " + playerInfo[i][1]);
             }
         }
     }
