@@ -251,9 +251,11 @@ public class MainUI implements ActionListener {
             frame.dispose();
             for (int i = 0; i < indicatePlayers.getPlayerNum(); i++) {
                 // chooses the player that reached the end first by selecting the highest player position
-                winners[0] = currentPlayer;
+                if (Integer.parseInt(indicatePlayers.playerInfo[i][2]) > Integer.parseInt(indicatePlayers.playerInfo[winners[1]][2])) {
+                    winners[0] = i;
+                }
                 if (Integer.parseInt(indicatePlayers.playerInfo[i][3]) > Integer.parseInt(indicatePlayers.playerInfo[winners[1]][3])) {
-                    winners[1] = Integer.parseInt(indicatePlayers.playerInfo[i][3]);
+                    winners[1] = i;
                 }
             }
             // runs the ending program

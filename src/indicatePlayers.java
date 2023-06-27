@@ -103,7 +103,7 @@ public class indicatePlayers implements ActionListener {
             MainUI openFinally = new MainUI();
             for (int i = 0; i < getPlayerNum(); i++) {
                 // adding player number to new position
-                MainUI.squares[Integer.parseInt(playerInfo[i][2])].setText(MainUI.squares[Integer.parseInt(playerInfo[i][2])].getText() + ", " + (i + 1));
+                MainUI.squares[Integer.parseInt(playerInfo[i][2])].setText(MainUI.squares[Integer.parseInt(playerInfo[i][2])].getText() + ", " + playerInfo[i][1]);
             }
         }
     }

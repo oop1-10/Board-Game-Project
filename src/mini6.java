@@ -10,9 +10,10 @@ public class mini6 implements ActionListener {
     static JLabel guessText = new JLabel();
     static JFrame minigameWindow = new JFrame();
     int randNum = rn.nextInt(1, 10);
-    public static int attempts = 0;
+    int attempts;
 
     mini6() {
+        attempts = 0;
         guess.setFocusable(false);
         guess.setBounds(100, 200, 100 ,40);
         guess.addActionListener(this);
